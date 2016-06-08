@@ -1,4 +1,3 @@
-#!/bin/python3
 from ledger import makeLedgerForSave
 import sys, os
 
