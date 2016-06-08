@@ -112,7 +112,7 @@ In general, I only use python3. You too should probably migrate. It's not like t
 
 
 
-**I want to fork this and do some awesome thing with it, do permit this?**
+**I want to fork this and do something awesome with it, do you permit this?**
 
 Of course! Do whatever you want to do with it. The code is released under MIT license and the mod is for public domain. Although it would be cool if you mention me. :)
 
