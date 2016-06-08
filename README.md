@@ -123,7 +123,7 @@ Of course! Do whatever you want to do with it. The code is released under MIT li
 
 I'm https://www.reddit.com/user/Ariestinak on reddit. 
 
-You can also contact me from my email: ariestinak@gmail.com
+You can also contact me by email: ariestinak@gmail.com
 
 
 
