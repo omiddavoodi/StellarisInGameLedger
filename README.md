@@ -22,7 +22,7 @@ In addition to these measures, it calculates a rudimentary weighted score that s
 
 # How can I use it?
 
-To use the mod, you should first download the latest version from here and extract it. It consists of two parts, a typical Stellaris mod, located in the "mod" directory, and a python script located in the "server" directory.
+To use the mod, you should first download the latest version from [here](https://github.com/omiddavoodi/StellarisInGameLedger/wiki/Releases) and extract it. It consists of two parts, a typical Stellaris mod, located in the "mod" directory, and a python script located in the "server" directory.
 
 You should copy the contents of the "mod" directory into Stellaris' mod directory. For Windows users, it can be found in "MyDocument/ParadoxInteractive/Stellaris/mod"
 
@@ -117,6 +117,9 @@ In general, I only use python3. You too should probably migrate. It's not like t
 Of course! Do whatever you want to do with it. The code is released under MIT license and the mod is for public domain. Although it would be cool if you mention me. :)
 
 
+# Where to Download
+
+[Click here](https://github.com/omiddavoodi/StellarisInGameLedger/wiki/Releases). Choose the latest release.
 
 
 # Contact
