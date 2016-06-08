@@ -80,19 +80,19 @@ The ledger is showing inaccurate information: Is it by any chance, showing an in
 
 # FAQ
 
-How does it actually work?
+**How does it actually work?**
 
 The game has a browser integrated into it. I'm reading the save files and extracting relevant information from them, turning them into an html page and serving them inside your own computer. The ledger button just makes the ingame browser show the address "localhost:12852".
 
 
 
-Why does it show outdated economy information?
+**Why does it show outdated economy information?**
 
 Right now, there is no "easy" way to extract that data from the save. That information is simply not cached and trying to calculate them will make the code even slower.
 
 
 
-I can help with something, do you need help?
+**I can help with something, do you need help?**
 
 Yes! I need help in several fields:
 * The current ledger UI is pretty ugly. Can you design something good and elegant?
@@ -104,7 +104,7 @@ If you can, and want to help, please contact me. :)
 
 
 
-Why Python3?
+**Why Python3?**
 
 Because I only have python3 installed on my computer. :)
 
@@ -112,7 +112,7 @@ In general, I only use python3. You too should probably migrate. It's not like t
 
 
 
-I want to fork this and do some awesome thing with it, do permit this?
+**I want to fork this and do some awesome thing with it, do permit this?**
 
 Of course! Do whatever you want to do with it. The code is released under MIT license and the mod is for public domain. Although it would be cool if you mention me. :)
 
