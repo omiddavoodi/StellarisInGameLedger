@@ -62,6 +62,9 @@ else:
         f = open('path.txt', 'r')
         path = f.read()
         f.close()
+
+        if (path[-1] == '/' or path[-1] == '\\'):
+            path = path[:len(path)-1]
         
         myServer = HTTPServer((hostName, hostPort), LedgerServer)
         print("Server Starts - %s:%s" % (hostName, hostPort))
