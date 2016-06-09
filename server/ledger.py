@@ -185,26 +185,32 @@ def makeLedgerForSave(path):
             ret += '<td><font size=3 color="#bbbbbb">%s</font></td>' % country.name
             ret += '<td><font color="#bbbbbb">{:10.2f}</font></td>'.format(country.score)
             ret += '<td><font color="#bbbbbb">{:10.2f}</font></td>'.format(country.militarypower)
-            ret += '<td><font color="#bbbbbb">%d/%d</font></td>' % (country.numcolonies, country.numplanets)
+            ret += '<td><font color="#bbbbbb">%d</font></td>' % country.techscore
+            ret += '<td><font color="#bbbbbb">%d</font></td>' % country.numcolonies
+            ret += '<td><font color="#bbbbbb">%d</font></td>' % country.numplanets
             ret += '<td><font color="#bbbbbb">%d</font></td>' % country.numsubjects
 
+            production = ('{:10.1f}'.format(country.energyproduction)).strip()
             if (country.energyproduction >= 0):
-                netincome = '<font color="#21a914">+{:10.2f}</font>'.format(country.energyproduction)
+                netincome = '<td><font color="#21a914">+%s</font></td>' % production
             else:
-                netincome = '<font color="#d62114">{:10.2f}</font>'.format(country.energyproduction)
-            ret += '<td><font color="#bbbbbb">{:10.2f}/</font>'.format(country.currentenergy) + netincome
+                netincome = '<td><font color="#d62114">%s</font></td>' % production
+            ret += '<td><font color="#bbbbbb">{:10.2f}</font></td>'.format(country.currentenergy) + netincome
 
+
+            production = ('{:10.1f}'.format(country.mineralproduction)).strip()
             if (country.mineralproduction >= 0):
-                netincome = '<font color="#21a914">+{:10.1f}</font>'.format(country.mineralproduction)
+                netincome = '<td><font color="#21a914">+%s</font></td>' % production
             else:
-                netincome = '<font color="#d62114">{:10.1f}</font>'.format(country.mineralproduction)
-            ret += '<td><font color="#bbbbbb">{:10.2f}/</font>'.format(country.currentminerals) + netincome
+                netincome = '<td><font color="#d62114">%s</font></td>' % production
+            ret += '<td><font color="#bbbbbb">{:10.2f}</font></td>'.format(country.currentminerals) + netincome
 
+            production = ('{:10.1f}'.format(country.influenceproduction)).strip()
             if (country.influenceproduction >= 0):
-                netincome = '<font color="#21a914">+{:10.1f}</font>'.format(country.influenceproduction)
+                netincome = '<td><font color="#21a914">+%s</font></td>' % production
             else:
-                netincome = '<font color="#d62114">{:10.1f}</font>'.format(country.influenceproduction)
-            ret += '<td><font color="#bbbbbb">{:10.2f}/</font>'.format(country.currentinfluence) + netincome
+                netincome = '<td><font color="#d62114">%s</font></td>' % production
+            ret += '<td><font color="#bbbbbb">{:10.2f}</font></td>'.format(country.currentinfluence) + netincome
 
             
             ret += '</tr>'

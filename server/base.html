@@ -1,19 +1,40 @@
 <html>
     <head>
         <title>Stellaris Ledger</title>
-		    <script>
+        <script>
 			function sortTable(table, col, reverse) {
 				var tb = table.tBodies[0], // use `<tbody>` to ignore `<thead>` and `<tfoot>` rows
 					tr = Array.prototype.slice.call(tb.rows, 0), // put rows into array
 					i;
 				reverse = -((+reverse) || -1);
 				tr = tr.sort(function (a, b) { // sort rows
-					return reverse // `-1 *` if want opposite order
-						* (a.cells[col].textContent.trim() // using `.textContent.trim()` for test
-							.localeCompare(b.cells[col].textContent.trim())
-						   );
+                    first = a.cells[col].textContent.trim();
+                    second = b.cells[col].textContent.trim();
+                    if (isNaN(first) || isNaN(second))
+                        return reverse // `-1 *` if want opposite order
+                            * (
+                                first.localeCompare(second)
+                               );
+                    else
+                        first = +first;
+                        second = +second;
+                        return reverse // `-1 *` if want opposite order
+                            * (first > second ? 1 : -1)
 				});
-				for(i = 0; i < tr.length; ++i) tb.appendChild(tr[i]); // append each row in order
+                backcolor = false;
+				for(i = 0; i < tr.length; ++i) 
+                {
+                    if (backcolor)
+                    {
+                        tr[i].setAttribute("bgcolor", "#113348");
+                    }
+                    else
+                    {
+                        tr[i].removeAttribute("bgcolor");
+                    }
+                    tb.appendChild(tr[i]); // append each row in order
+                    backcolor = !backcolor;
+                }
 			}
 			
 			function makeSortable(table) {
@@ -43,11 +64,16 @@
                 <th><font size=3>Name</font></th>
                 <th><font size=3>Score</font></th>
                 <th><font size=3>Military Power</font></th>
-                <th><font size=2>Colonized/Owned Planets</font></th>
+                <th><font size=2>Researched Techs</font></th>
+                <th><font size=3>Colonies</font></th>
+                <th><font size=2>Owned Planets</font></th>
                 <th><font size=3>Subjects</font></th>
                 <th><font size=3>Energy</font></th>
+                <th><font size=3>Energy Income</font></th>
                 <th><font size=3>Minerals</font></th>
+                <th><font size=3>Mineral Income</font></th>
                 <th><font size=3>Influence</font></th>
+                <th><font size=3>Influence Income</font></th>
             </tr>
             </thead>
             <tbody>
