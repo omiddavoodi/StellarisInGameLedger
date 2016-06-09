@@ -17,6 +17,7 @@ InGameLedger is a mod for Paradox Interactive's "Stellaris" that implements a si
 * Net Mineral Income
 * Current Influence
 * Net Influence Income
+* Number of Researched Technologies
 
 In addition to these measures, it calculates a rudimentary weighted score that some players might find useful.
 
