@@ -7,7 +7,9 @@ import time
 hostName = "localhost"
 hostPort = 12852
 
-f = open(sys.argv[0][:sys.argv[0].rfind('start.py')] + 'base.html', 'r')
+basePath = sys.argv[0][:sys.argv[0].rfind('start.py')]
+
+f = open(basePath + 'base.html', 'r')
 basehtml = f.read()
 f.close()
 
@@ -40,7 +42,7 @@ class LedgerServer(BaseHTTPRequestHandler):
                     if (os.path.getmtime(saves[i]) > os.path.getmtime(least)):
                         least = saves[i]
                 
-                led = makeLedgerForSave(least)
+                led = makeLedgerForSave(least, basePath)
                 
                 result = basehtml.replace('{{HERE}}', led)
                 self.wfile.write(bytes(result, "utf-8"))

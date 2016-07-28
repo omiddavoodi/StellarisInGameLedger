@@ -32,20 +32,58 @@
                     {
                         tr[i].removeAttribute("bgcolor");
                     }
+                    tr[i].cells[0].textContent = String(i+1);
+                    tr[i].cells[0].style.color = "#bbbbbb";
                     tb.appendChild(tr[i]); // append each row in order
                     backcolor = !backcolor;
                 }
 			}
 			
+            function ResetTable(table, col) {
+				var tb = table.tBodies[0], // use `<tbody>` to ignore `<thead>` and `<tfoot>` rows
+					tr = Array.prototype.slice.call(tb.rows, 0), // put rows into array
+					i;
+				tr = tr.sort(function (a, b) { // sort rows
+                    first = a.cells[col].getAttribute("hiddenvalue").trim();
+                    second = b.cells[col].getAttribute("hiddenvalue").trim();
+                    if (isNaN(first) || isNaN(second))
+                        return first.localeCompare(second);
+                    else
+                    {
+                        first = +first;
+                        second = +second;
+                        return (first > second ? 1 : -1)
+                    }
+				});
+                backcolor = false;
+				for(i = 0; i < tr.length; ++i) 
+                {
+                    if (backcolor)
+                    {
+                        tr[i].setAttribute("bgcolor", "#113348");
+                    }
+                    else
+                    {
+                        tr[i].removeAttribute("bgcolor");
+                    }
+                    tr[i].cells[0].textContent = String(i+1);
+                    tr[i].cells[0].style.color = "#bbbbbb";
+                    tb.appendChild(tr[i]); // append each row in order
+                    backcolor = !backcolor;
+                }
+			}
+            
 			function makeSortable(table) {
 				var th = table.tHead, i;
 				th && (th = th.rows[0]) && (th = th.cells);
 				if (th) i = th.length;
 				else return; // if no `<thead>` then do nothing
-				while (--i >= 0) (function (i) {
+				while (--i > 1) (function (i) {
 					var dir = 1;
 					th[i].addEventListener('click', function () {sortTable(table, i, (dir = 1 - dir))});
 				}(i));
+                th[1].addEventListener('click', function () {ResetTable(table, i)});
+                
 			}
 
 			function makeAllSortable(parent) {
@@ -61,6 +99,8 @@
         <table>
             <thead>
             <tr align=center bgcolor="#6698aa">
+                <th bgcolor="#06233b"><font size=3>&nbsp;</font></th>
+                <th><font size=3>-</font></th>
                 <th><font size=3>Name</font></th>
                 <th><font size=3>Score</font></th>
                 <th><font size=3>Military Power</font></th>

@@ -1,6 +1,7 @@
 import zipfile
+import sys
 import paradoxparser
-
+import datetime
 
 TECH_SCORE_MULTIPLIER = 10
 ACCUMULATED_ENERGY_MULTIPLIER = 0.1
@@ -46,7 +47,7 @@ class Country:
         self.score += NUM_COLONIES_MULTIPLIER * self.numcolonies
         self.score += NUM_PLANETS_MULTIPLIER * self.numplanets
 
-def makeLedgerForSave(path):
+def makeLedgerForSave(path, basePath):
     save = zipfile.ZipFile(path)
     f = save.open('gamestate')
     s = str(f.read(), 'utf-8')
@@ -55,7 +56,6 @@ def makeLedgerForSave(path):
     countries = s[s.find('country={'):]
 
     t = 1
-
     cdata = []
     csdata = ''
     instring = False
@@ -81,14 +81,19 @@ def makeLedgerForSave(path):
         if (t == 0):
             countries = countries[:i+1]
             break
-
+    
+    
     result = paradoxparser.psr.parse(countries)
+    
 
     country_raw_data = result[0][1]
 
+    
     ret = ''
-
+    
     bgcolor = False
+
+    num = 1
     
     for i in country_raw_data:
         if (i[1] != 'none'):
@@ -182,6 +187,12 @@ def makeLedgerForSave(path):
                 ret += '<tr align=center bgcolor="#113348">'
             else:
                 ret += '<tr align=center>'
+
+            ret += '<td><font color="#bbbbbb">%s</font></td>' % num
+            if (num == 1):
+                ret += '<td hiddenvalue=%s><font color="#bbbbbb">&#9733;</font></td>' % num
+            else:
+                ret += '<td hiddenvalue=%s><font color="#bbbbbb">&nbsp;</font></td>' % num
             ret += '<td><font size=3 color="#bbbbbb">%s</font></td>' % country.name
             ret += '<td><font color="#bbbbbb">{:10.2f}</font></td>'.format(country.score)
             ret += '<td><font color="#bbbbbb">{:10.2f}</font></td>'.format(country.militarypower)
@@ -215,6 +226,7 @@ def makeLedgerForSave(path):
             
             ret += '</tr>'
             
+            num += 1
             bgcolor = not bgcolor
 ##            print(country.name)
 ##            print(country.techscore)
