@@ -33,6 +33,7 @@ class Country:
         self.numplanets = 0
         self.numarmies = 0
         self.type = ''
+        self.id = '0'
         
     def calcscore(self):
         self.score += TECH_SCORE_MULTIPLIER * self.techscore
@@ -52,7 +53,14 @@ def makeLedgerForSave(path, basePath):
     f = save.open('gamestate')
     s = str(f.read(), 'utf-8')
     f.close()
-
+    
+    
+    playertaglocation = s.find('player={')
+    playertag = s[playertaglocation:s.find('}', playertaglocation)]
+    
+    
+    playercountry = playertag[playertag.find('country=')+len('country='):playertag.find('}')].strip()
+    
     countries = s[s.find('country={'):]
 
     t = 1
@@ -91,13 +99,34 @@ def makeLedgerForSave(path, basePath):
     
     ret = ''
     
+    retlist = []
+    
+    contactlist = []
+    
     bgcolor = False
 
     num = 1
     
     for i in country_raw_data:
         if (i[1] != 'none'):
+            
+            ret2 = ''
+            isUs = False
+            if (i[0] == playercountry):
+                isUs = True
+                contactlist.append(i[0])
+                relman_part = paradoxparser.paradox_dict_get_child_by_name(i[1], 'relations_manager')
+                if (relman_part is not None):
+                    for j in relman_part:
+                        countryid = paradoxparser.paradox_dict_get_child_by_name(j[1], 'country')
+                        commun = paradoxparser.paradox_dict_get_child_by_name(j[1], 'communications')
+                        if (commun != None):
+                            contactlist.append(countryid)
+                            
             country = Country()
+            
+            country.id = i[0]
+            
             namepart = paradoxparser.paradox_dict_get_child_by_name(i[1], 'name')
             if (namepart is not None):
                 country.name = namepart.replace('"', '')
@@ -184,29 +213,29 @@ def makeLedgerForSave(path, basePath):
 
             country.calcscore()
             if (bgcolor):
-                ret += '<tr align=center bgcolor="#113348">'
+                ret2 += '<tr align=center bgcolor="#113348">'
             else:
-                ret += '<tr align=center>'
+                ret2 += '<tr align=center>'
 
-            ret += '<td><font color="#bbbbbb">%s</font></td>' % num
-            if (num == 1):
-                ret += '<td hiddenvalue=%s><font color="#bbbbbb">&#9733;</font></td>' % num
+            ret2 += '<td><font color="#bbbbbb">%s</font></td>' % num
+            if (isUs):
+                ret2 += '<td hiddenvalue=%s><font color="#bbbbbb">&#9733;</font></td>' % num
             else:
-                ret += '<td hiddenvalue=%s><font color="#bbbbbb">&nbsp;</font></td>' % num
-            ret += '<td><font size=3 color="#bbbbbb">%s</font></td>' % country.name
-            ret += '<td><font color="#bbbbbb">{:10.2f}</font></td>'.format(country.score)
-            ret += '<td><font color="#bbbbbb">{:10.2f}</font></td>'.format(country.militarypower)
-            ret += '<td><font color="#bbbbbb">%d</font></td>' % country.techscore
-            ret += '<td><font color="#bbbbbb">%d</font></td>' % country.numcolonies
-            ret += '<td><font color="#bbbbbb">%d</font></td>' % country.numplanets
-            ret += '<td><font color="#bbbbbb">%d</font></td>' % country.numsubjects
+                ret2 += '<td hiddenvalue=%s><font color="#bbbbbb">&nbsp;</font></td>' % num
+            ret2 += '<td><font size=3 color="#bbbbbb">%s</font></td>' % country.name
+            ret2 += '<td><font color="#bbbbbb">{:10.2f}</font></td>'.format(country.score)
+            ret2 += '<td><font color="#bbbbbb">{:10.2f}</font></td>'.format(country.militarypower)
+            ret2 += '<td><font color="#bbbbbb">%d</font></td>' % country.techscore
+            ret2 += '<td><font color="#bbbbbb">%d</font></td>' % country.numcolonies
+            ret2 += '<td><font color="#bbbbbb">%d</font></td>' % country.numplanets
+            ret2 += '<td><font color="#bbbbbb">%d</font></td>' % country.numsubjects
 
             production = ('{:10.1f}'.format(country.energyproduction)).strip()
             if (country.energyproduction >= 0):
                 netincome = '<td><font color="#21a914">+%s</font></td>' % production
             else:
                 netincome = '<td><font color="#d62114">%s</font></td>' % production
-            ret += '<td><font color="#bbbbbb">{:10.2f}</font></td>'.format(country.currentenergy) + netincome
+            ret2 += '<td><font color="#bbbbbb">{:10.2f}</font></td>'.format(country.currentenergy) + netincome
 
 
             production = ('{:10.1f}'.format(country.mineralproduction)).strip()
@@ -214,18 +243,18 @@ def makeLedgerForSave(path, basePath):
                 netincome = '<td><font color="#21a914">+%s</font></td>' % production
             else:
                 netincome = '<td><font color="#d62114">%s</font></td>' % production
-            ret += '<td><font color="#bbbbbb">{:10.2f}</font></td>'.format(country.currentminerals) + netincome
+            ret2 += '<td><font color="#bbbbbb">{:10.2f}</font></td>'.format(country.currentminerals) + netincome
 
             production = ('{:10.1f}'.format(country.influenceproduction)).strip()
             if (country.influenceproduction >= 0):
                 netincome = '<td><font color="#21a914">+%s</font></td>' % production
             else:
                 netincome = '<td><font color="#d62114">%s</font></td>' % production
-            ret += '<td><font color="#bbbbbb">{:10.2f}</font></td>'.format(country.currentinfluence) + netincome
+            ret2 += '<td><font color="#bbbbbb">{:10.2f}</font></td>'.format(country.currentinfluence) + netincome
 
             
-            ret += '</tr>'
-            
+            ret2 += '</tr>'
+            retlist.append((country.id, ret2))
             num += 1
             bgcolor = not bgcolor
 ##            print(country.name)
@@ -242,5 +271,12 @@ def makeLedgerForSave(path, basePath):
 ##            print(country.energyproduction)
 ##            print(country.mineralproduction)
 ##            print(country.influenceproduction)
+    retlist2 = []
+    
+    for i in retlist:
+        if (i[0] in contactlist):
+            retlist2.append(i[1])
+    
+    ret = "\n".join(retlist2)
     return ret
 

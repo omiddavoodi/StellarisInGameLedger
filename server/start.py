@@ -27,7 +27,8 @@ class LedgerServer(BaseHTTPRequestHandler):
 ##        self.wfile.write(bytes("<p>You accessed path: %s</p>" % self.path, "utf-8"))
 ##        self.wfile.write(bytes("</body></html>", "utf-8"))
         
-        try:
+        #try:
+        if (True):
             games = [i for i in os.listdir(path)]
             saves = []
             for i in games:
@@ -48,8 +49,8 @@ class LedgerServer(BaseHTTPRequestHandler):
                 self.wfile.write(bytes(result, "utf-8"))
             else:
                 self.wfile.write(bytes('No save found', "utf-8"))
-        except:
-            self.wfile.write(bytes('Internal server error', "utf-8"))
+        #except:
+        #    self.wfile.write(bytes('Internal server error', "utf-8"))
 
 
 if (len(sys.argv) > 1):

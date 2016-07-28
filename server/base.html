@@ -83,16 +83,17 @@
 					th[i].addEventListener('click', function () {sortTable(table, i, (dir = 1 - dir))});
 				}(i));
                 th[1].addEventListener('click', function () {ResetTable(table, i)});
-                
+                ResetTable(table, i);
 			}
 
 			function makeAllSortable(parent) {
 				parent = parent || document.body;
 				var t = parent.getElementsByTagName('table'), i = t.length;
 				while (--i >= 0) makeSortable(t[i]);
+                
 			}
 			
-			window.onload = function () { makeAllSortable() }
+			window.onload = function () { makeAllSortable(); }
 		</script>
     </head>
     <body bgcolor="#06233b">
