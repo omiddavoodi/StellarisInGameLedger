@@ -71,7 +71,7 @@ I can't run "start.py" at all. It closes the moment it is started: Check that yo
 
 I can't find the ledger button: Are you sure that you have installed the "mod" part correctly? Are you sure that You have activated the mod? Are you sure you don't have another mod that adds more buttons to the in-game browser?
 
-Stellaris Launcher says the mod is out of date: Although the launcher will say that, it doesn't mean that it won't run. You can still launch the game and check it for yourself. As the mod part is pretty light, I doubt it will really cause any problems, even if it isn't tested on newer versions of the game.
+Stellaris Launcher says the mod is out of date: Although the launcher will say that, it doesn't mean that it won't run. You can still launch the game and check it for yourself. As the mod part is pretty light, I doubt it will really cause any problems. I have checked this on all versions from 1.0.0 to 1.2.1 and it works fine. So ignore the warning and launch your game.
 
 I found the ledger button and clicked on it, but nothing happens: Do other buttons work? Is SteamOverlay enabled? Do you see the Wiki? Is the game geniune and activated on steam?
 
