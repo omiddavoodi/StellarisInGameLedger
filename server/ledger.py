@@ -223,34 +223,34 @@ def makeLedgerForSave(path, basePath):
             else:
                 ret2 += '<td hiddenvalue=%s>&nbsp;</td>' % num
             ret2 += '<td class="name">%s</td>' % country.name
-            ret2 += '<td>{:10.2f}</td>'.format(country.score).strip()
-            ret2 += '<td>{:10.2f}</td>'.format(country.militarypower)
+            ret2 += '<td>{:10.0f}</td>'.format(country.score).strip()
+            ret2 += '<td>{:10.0f}</td>'.format(country.militarypower)
             ret2 += '<td>%d</td>' % country.techscore
             ret2 += '<td>%d</td>' % country.numcolonies
             ret2 += '<td>%d</td>' % country.numplanets
             ret2 += '<td>%d</td>' % country.numsubjects
 
-            production = ('{:10.1f}'.format(country.energyproduction)).strip()
+            production = ('{:10.0f}'.format(country.energyproduction)).strip()
             if (country.energyproduction >= 0):
                 netincome = '<td class="positive">+%s</td>' % production
             else:
                 netincome = '<td class="negative">%s</td>' % production
-            ret2 += '<td>{:10.2f}</td>'.format(country.currentenergy) + netincome
+            ret2 += '<td>{:10.0f}</td>'.format(country.currentenergy) + netincome
 
 
-            production = ('{:10.1f}'.format(country.mineralproduction)).strip()
+            production = ('{:10.0f}'.format(country.mineralproduction)).strip()
             if (country.mineralproduction >= 0):
                 netincome = '<td class="positive">+%s</td>' % production
             else:
                 netincome = '<td class="negative">%s</td>' % production
-            ret2 += '<td>{:10.2f}</td>'.format(country.currentminerals) + netincome
+            ret2 += '<td>{:10.0f}</td>'.format(country.currentminerals) + netincome
 
             production = ('{:10.1f}'.format(country.influenceproduction)).strip()
             if (country.influenceproduction >= 0):
                 netincome = '<td class="positive">+%s</td>' % production
             else:
                 netincome = '<td class="negative">%s</td>' % production
-            ret2 += '<td>{:10.2f}</td>'.format(country.currentinfluence) + netincome
+            ret2 += '<td>{:10.0f}</td>'.format(country.currentinfluence) + netincome
 
 
             ret2 += '</tr>'
