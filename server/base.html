@@ -64,11 +64,11 @@
                 {
                     if (backcolor)
                     {
-                        tr[i].setAttribute("bgcolor", "#113348");
+                        tr[i].className = "odd";
                     }
                     else
                     {
-                        tr[i].removeAttribute("bgcolor");
+                        tr[i].className = "even";
                     }
                     tr[i].cells[0].textContent = String(i+1);
                     tr[i].cells[0].style.color = "#bbbbbb";
