@@ -34,7 +34,7 @@ class Country:
         self.numarmies = 0
         self.type = ''
         self.id = '0'
-        
+
     def calcscore(self):
         self.score += TECH_SCORE_MULTIPLIER * self.techscore
         self.score += ACCUMULATED_ENERGY_MULTIPLIER * self.currentenergy
@@ -53,14 +53,14 @@ def makeLedgerForSave(path, basePath):
     f = save.open('gamestate')
     s = str(f.read(), 'utf-8')
     f.close()
-    
-    
+
+
     playertaglocation = s.find('player={')
     playertag = s[playertaglocation:s.find('}', playertaglocation)]
-    
-    
+
+
     playercountry = playertag[playertag.find('country=')+len('country='):playertag.find('}')].strip()
-    
+
     countries = s[s.find('country={'):]
 
     t = 1
@@ -84,32 +84,32 @@ def makeLedgerForSave(path, basePath):
                 cdata.append(csdata + '}')
         elif countries[i] == '"':
             instring = not instring
-        
+
         csdata += countries[i]
         if (t == 0):
             countries = countries[:i+1]
             break
-    
-    
+
+
     result = paradoxparser.psr.parse(countries)
-    
+
 
     country_raw_data = result[0][1]
 
-    
+
     ret = ''
-    
+
     retlist = []
-    
+
     contactlist = []
-    
+
     bgcolor = False
 
     num = 1
-    
+
     for i in country_raw_data:
         if (i[1] != 'none'):
-            
+
             ret2 = ''
             isUs = False
             if (i[0] == playercountry):
@@ -122,11 +122,11 @@ def makeLedgerForSave(path, basePath):
                         commun = paradoxparser.paradox_dict_get_child_by_name(j[1], 'communications')
                         if (commun != None):
                             contactlist.append(countryid)
-                            
+
             country = Country()
-            
+
             country.id = i[0]
-            
+
             namepart = paradoxparser.paradox_dict_get_child_by_name(i[1], 'name')
             if (namepart is not None):
                 country.name = namepart.replace('"', '')
@@ -144,7 +144,7 @@ def makeLedgerForSave(path, basePath):
                 country.type = empiretype.replace('"', '')
                 if (country.type not in ('fallen_empire', 'default')):
                     continue
-            
+
             subjectpart = paradoxparser.paradox_dict_get_child_by_name(i[1], 'subjects')
             if (subjectpart is not None):
                 country.numsubjects = len(subjectpart)
@@ -173,21 +173,21 @@ def makeLedgerForSave(path, basePath):
                                 country.currentenergy = float(energy)
                             else:
                                 country.currentenergy = float(energy[0])
-                                
+
                         minerals = paradoxparser.paradox_dict_get_child_by_name(resourcesmodule, 'minerals')
                         if (minerals is not None):
                             if (type(minerals) == str):
                                 country.currentminerals = float(minerals)
                             else:
                                 country.currentminerals = float(minerals[0])
-                                
+
                         influence = paradoxparser.paradox_dict_get_child_by_name(resourcesmodule, 'influence')
                         if (influence is not None):
                             if (type(influence) == str):
                                 country.currentinfluence = float(influence)
                             else:
                                 country.currentinfluence = float(influence[0])
-                                
+
                     lastmonthmodule = paradoxparser.paradox_dict_get_child_by_name(economymodule, 'last_month')
                     if (lastmonthmodule is not None):
                         energy = paradoxparser.paradox_dict_get_child_by_name(lastmonthmodule, 'energy')
@@ -196,14 +196,14 @@ def makeLedgerForSave(path, basePath):
                                 country.energyproduction = float(energy)
                             else:
                                 country.energyproduction = float(energy[0])
-                                
+
                         minerals = paradoxparser.paradox_dict_get_child_by_name(lastmonthmodule, 'minerals')
                         if (minerals is not None):
                             if (type(minerals) == str):
                                 country.mineralproduction = float(minerals)
                             else:
                                 country.mineralproduction = float(minerals[0])
-                                
+
                         influence = paradoxparser.paradox_dict_get_child_by_name(lastmonthmodule, 'influence')
                         if (influence is not None):
                             if (type(influence) == str):
@@ -213,46 +213,46 @@ def makeLedgerForSave(path, basePath):
 
             country.calcscore()
             if (bgcolor):
-                ret2 += '<tr align=center bgcolor="#113348">'
+                ret2 += '<tr class="odd">'
             else:
-                ret2 += '<tr align=center>'
+                ret2 += '<tr class="even">'
 
-            ret2 += '<td><font color="#bbbbbb">%s</font></td>' % num
+            ret2 += '<td>%s</td>' % num
             if (isUs):
-                ret2 += '<td hiddenvalue=%s><font color="#bbbbbb">&#9733;</font></td>' % num
+                ret2 += '<td hiddenvalue=%s>&#9733;</td>' % num
             else:
-                ret2 += '<td hiddenvalue=%s><font color="#bbbbbb">&nbsp;</font></td>' % num
-            ret2 += '<td><font size=3 color="#bbbbbb">%s</font></td>' % country.name
-            ret2 += '<td><font color="#bbbbbb">{:10.2f}</font></td>'.format(country.score)
-            ret2 += '<td><font color="#bbbbbb">{:10.2f}</font></td>'.format(country.militarypower)
-            ret2 += '<td><font color="#bbbbbb">%d</font></td>' % country.techscore
-            ret2 += '<td><font color="#bbbbbb">%d</font></td>' % country.numcolonies
-            ret2 += '<td><font color="#bbbbbb">%d</font></td>' % country.numplanets
-            ret2 += '<td><font color="#bbbbbb">%d</font></td>' % country.numsubjects
+                ret2 += '<td hiddenvalue=%s>&nbsp;</td>' % num
+            ret2 += '<td class="name">%s</td>' % country.name
+            ret2 += '<td>{:10.0f}</td>'.format(country.score).strip()
+            ret2 += '<td>{:10.0f}</td>'.format(country.militarypower)
+            ret2 += '<td>%d</td>' % country.techscore
+            ret2 += '<td>%d</td>' % country.numcolonies
+            ret2 += '<td>%d</td>' % country.numplanets
+            ret2 += '<td>%d</td>' % country.numsubjects
 
-            production = ('{:10.1f}'.format(country.energyproduction)).strip()
+            production = ('{:10.0f}'.format(country.energyproduction)).strip()
             if (country.energyproduction >= 0):
-                netincome = '<td><font color="#21a914">+%s</font></td>' % production
+                netincome = '<td class="positive">+%s</td>' % production
             else:
-                netincome = '<td><font color="#d62114">%s</font></td>' % production
-            ret2 += '<td><font color="#bbbbbb">{:10.2f}</font></td>'.format(country.currentenergy) + netincome
+                netincome = '<td class="negative">%s</td>' % production
+            ret2 += '<td>{:10.0f}</td>'.format(country.currentenergy) + netincome
 
 
-            production = ('{:10.1f}'.format(country.mineralproduction)).strip()
+            production = ('{:10.0f}'.format(country.mineralproduction)).strip()
             if (country.mineralproduction >= 0):
-                netincome = '<td><font color="#21a914">+%s</font></td>' % production
+                netincome = '<td class="positive">+%s</td>' % production
             else:
-                netincome = '<td><font color="#d62114">%s</font></td>' % production
-            ret2 += '<td><font color="#bbbbbb">{:10.2f}</font></td>'.format(country.currentminerals) + netincome
+                netincome = '<td class="negative">%s</td>' % production
+            ret2 += '<td>{:10.0f}</td>'.format(country.currentminerals) + netincome
 
             production = ('{:10.1f}'.format(country.influenceproduction)).strip()
             if (country.influenceproduction >= 0):
-                netincome = '<td><font color="#21a914">+%s</font></td>' % production
+                netincome = '<td class="positive">+%s</td>' % production
             else:
-                netincome = '<td><font color="#d62114">%s</font></td>' % production
-            ret2 += '<td><font color="#bbbbbb">{:10.2f}</font></td>'.format(country.currentinfluence) + netincome
+                netincome = '<td class="negative">%s</td>' % production
+            ret2 += '<td>{:10.0f}</td>'.format(country.currentinfluence) + netincome
 
-            
+
             ret2 += '</tr>'
             retlist.append((country.id, ret2))
             num += 1
@@ -272,11 +272,11 @@ def makeLedgerForSave(path, basePath):
 ##            print(country.mineralproduction)
 ##            print(country.influenceproduction)
     retlist2 = []
-    
+
     for i in retlist:
         if (i[0] in contactlist):
             retlist2.append(i[1])
-    
+
     ret = "\n".join(retlist2)
     return ret
 

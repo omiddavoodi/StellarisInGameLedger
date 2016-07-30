@@ -1,13 +1,51 @@
 <html>
     <head>
         <title>Stellaris Ledger</title>
+        <style>
+            body{
+                background-color: #06233b;
+            }
+
+            table#ledger {
+                width: 100%;
+            }
+
+            #ledger th {
+                font-size: small;
+                background-color: #6698aa;
+                padding: 2px;
+            }
+
+            #ledger tr.odd {
+                background-color: #113348;
+            }
+            #ledger tr.even {
+                background-color: transparent;
+            }
+
+            #ledger td{
+                color: #bbbbbb;
+                text-align: center;
+            }
+            #ledger td.name{
+                text-align: left;
+            }
+            #ledger td.positive{
+                color: #21a914;
+            }
+
+            #ledger td.negative{
+                color: #d62114;
+            }
+
+        </style>
         <script>
-			function sortTable(table, col, reverse) {
-				var tb = table.tBodies[0], // use `<tbody>` to ignore `<thead>` and `<tfoot>` rows
-					tr = Array.prototype.slice.call(tb.rows, 0), // put rows into array
-					i;
-				reverse = -((+reverse) || -1);
-				tr = tr.sort(function (a, b) { // sort rows
+            function sortTable(table, col, reverse) {
+                var tb = table.tBodies[0], // use `<tbody>` to ignore `<thead>` and `<tfoot>` rows
+                    tr = Array.prototype.slice.call(tb.rows, 0), // put rows into array
+                    i;
+                reverse = -((+reverse) || -1);
+                tr = tr.sort(function (a, b) { // sort rows
                     first = a.cells[col].textContent.trim();
                     second = b.cells[col].textContent.trim();
                     if (isNaN(first) || isNaN(second))
@@ -20,30 +58,30 @@
                         second = +second;
                         return reverse // `-1 *` if want opposite order
                             * (first > second ? 1 : -1)
-				});
+                });
                 backcolor = false;
-				for(i = 0; i < tr.length; ++i) 
+                for(i = 0; i < tr.length; ++i)
                 {
                     if (backcolor)
                     {
-                        tr[i].setAttribute("bgcolor", "#113348");
+                        tr[i].className = "odd";
                     }
                     else
                     {
-                        tr[i].removeAttribute("bgcolor");
+                        tr[i].className = "even";
                     }
                     tr[i].cells[0].textContent = String(i+1);
                     tr[i].cells[0].style.color = "#bbbbbb";
                     tb.appendChild(tr[i]); // append each row in order
                     backcolor = !backcolor;
                 }
-			}
-			
+            }
+
             function ResetTable(table, col) {
-				var tb = table.tBodies[0], // use `<tbody>` to ignore `<thead>` and `<tfoot>` rows
-					tr = Array.prototype.slice.call(tb.rows, 0), // put rows into array
-					i;
-				tr = tr.sort(function (a, b) { // sort rows
+                var tb = table.tBodies[0], // use `<tbody>` to ignore `<thead>` and `<tfoot>` rows
+                    tr = Array.prototype.slice.call(tb.rows, 0), // put rows into array
+                    i;
+                tr = tr.sort(function (a, b) { // sort rows
                     first = a.cells[col].getAttribute("hiddenvalue").trim();
                     second = b.cells[col].getAttribute("hiddenvalue").trim();
                     if (isNaN(first) || isNaN(second))
@@ -54,9 +92,9 @@
                         second = +second;
                         return (first > second ? 1 : -1)
                     }
-				});
+                });
                 backcolor = false;
-				for(i = 0; i < tr.length; ++i) 
+                for(i = 0; i < tr.length; ++i)
                 {
                     if (backcolor)
                     {
@@ -71,50 +109,50 @@
                     tb.appendChild(tr[i]); // append each row in order
                     backcolor = !backcolor;
                 }
-			}
-            
-			function makeSortable(table) {
-				var th = table.tHead, i;
-				th && (th = th.rows[0]) && (th = th.cells);
-				if (th) i = th.length;
-				else return; // if no `<thead>` then do nothing
-				while (--i > 1) (function (i) {
-					var dir = 1;
-					th[i].addEventListener('click', function () {sortTable(table, i, (dir = 1 - dir))});
-				}(i));
+            }
+
+            function makeSortable(table) {
+                var th = table.tHead, i;
+                th && (th = th.rows[0]) && (th = th.cells);
+                if (th) i = th.length;
+                else return; // if no `<thead>` then do nothing
+                while (--i > 1) (function (i) {
+                    var dir = 1;
+                    th[i].addEventListener('click', function () {sortTable(table, i, (dir = 1 - dir))});
+                }(i));
                 th[1].addEventListener('click', function () {ResetTable(table, i)});
                 ResetTable(table, i);
-			}
+            }
 
-			function makeAllSortable(parent) {
-				parent = parent || document.body;
-				var t = parent.getElementsByTagName('table'), i = t.length;
-				while (--i >= 0) makeSortable(t[i]);
-                
-			}
-			
-			window.onload = function () { makeAllSortable(); }
-		</script>
+            function makeAllSortable(parent) {
+                parent = parent || document.body;
+                var t = parent.getElementsByTagName('table'), i = t.length;
+                while (--i >= 0) makeSortable(t[i]);
+
+            }
+
+            window.onload = function () { makeAllSortable(); }
+        </script>
     </head>
-    <body bgcolor="#06233b">
-        <table>
+    <body>
+        <table id="ledger">
             <thead>
-            <tr align=center bgcolor="#6698aa">
-                <th bgcolor="#06233b"><font size=3>&nbsp;</font></th>
-                <th><font size=3>-</font></th>
-                <th><font size=3>Name</font></th>
-                <th><font size=3>Score</font></th>
-                <th><font size=3>Military Power</font></th>
-                <th><font size=2>Researched Techs</font></th>
-                <th><font size=3>Colonies</font></th>
-                <th><font size=2>Owned Planets</font></th>
-                <th><font size=3>Subjects</font></th>
-                <th><font size=3>Energy</font></th>
-                <th><font size=3>Energy Income</font></th>
-                <th><font size=3>Minerals</font></th>
-                <th><font size=3>Mineral Income</font></th>
-                <th><font size=3>Influence</font></th>
-                <th><font size=3>Influence Income</font></th>
+            <tr >
+                <th>&nbsp;</th>
+                <th>-</th>
+                <th>Name</th>
+                <th>Score</th>
+                <th>Military Power</th>
+                <th>Techs</th>
+                <th>Colonies</th>
+                <th>Planets</th>
+                <th>Subjects</th>
+                <th>Energy</th>
+                <th>Energy Income</th>
+                <th>Minerals</th>
+                <th>Mineral Income</th>
+                <th>Influence</th>
+                <th>Influence Income</th>
             </tr>
             </thead>
             <tbody>
