@@ -16,10 +16,7 @@ t_RBRACE = r'\}'
 t_EQUAL = r'\='
 t_MINUS = r'-'
 
-def t_NUM(t):
-    r'\d+\.\d+|\d+'
-    #t.value = float(t.value)
-    return t
+
 
 def t_newline(t):
     r'\n+'
@@ -32,7 +29,12 @@ def t_error(t):
     t.lexer.skip(1)
 
 def t_IDEN(t):
-    r'[A-Za-z_][0-9A-Za-z_\:]*'
+    r'[0-9A-Za-z_\:]*[A-Za-z_][0-9A-Za-z_\:]*'
+    return t
+
+def t_NUM(t):
+    r'\d+\.\d+|\d+'
+    #t.value = float(t.value)
     return t
 
 def t_STR(t):
