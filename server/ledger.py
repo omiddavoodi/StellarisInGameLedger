@@ -103,8 +103,6 @@ def makeLedgerForSave(path, basePath):
 
     contactlist = []
 
-    bgcolor = False
-
     num = 1
 
     for i in country_raw_data:
@@ -212,10 +210,7 @@ def makeLedgerForSave(path, basePath):
                                 country.influenceproduction = float(influence[0])
 
             country.calcscore()
-            if (bgcolor):
-                ret2 += '<tr class="odd">'
-            else:
-                ret2 += '<tr class="even">'
+            ret2 += '<tr>'
 
             ret2 += '<td>%s</td>' % num
             if (isUs):
@@ -256,7 +251,6 @@ def makeLedgerForSave(path, basePath):
             ret2 += '</tr>'
             retlist.append((country.id, ret2))
             num += 1
-            bgcolor = not bgcolor
 ##            print(country.name)
 ##            print(country.techscore)
 ##            print(country.militarypower)

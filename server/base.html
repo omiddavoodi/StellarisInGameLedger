@@ -16,10 +16,10 @@
                 padding: 2px;
             }
 
-            #ledger tr.odd {
+            #ledger tr:nth-child(2n) {
                 background-color: #113348;
             }
-            #ledger tr.even {
+            #ledger tr:nth-child(2n+1) {
                 background-color: transparent;
             }
 
@@ -59,21 +59,10 @@
                         return reverse // `-1 *` if want opposite order
                             * (first > second ? 1 : -1)
                 });
-                backcolor = false;
                 for(i = 0; i < tr.length; ++i)
                 {
-                    if (backcolor)
-                    {
-                        tr[i].className = "odd";
-                    }
-                    else
-                    {
-                        tr[i].className = "even";
-                    }
                     tr[i].cells[0].textContent = String(i+1);
-                    tr[i].cells[0].style.color = "#bbbbbb";
                     tb.appendChild(tr[i]); // append each row in order
-                    backcolor = !backcolor;
                 }
             }
 
@@ -93,21 +82,10 @@
                         return (first > second ? 1 : -1)
                     }
                 });
-                backcolor = false;
                 for(i = 0; i < tr.length; ++i)
                 {
-                    if (backcolor)
-                    {
-                        tr[i].setAttribute("bgcolor", "#113348");
-                    }
-                    else
-                    {
-                        tr[i].removeAttribute("bgcolor");
-                    }
                     tr[i].cells[0].textContent = String(i+1);
-                    tr[i].cells[0].style.color = "#bbbbbb";
                     tb.appendChild(tr[i]); // append each row in order
-                    backcolor = !backcolor;
                 }
             }
 
