@@ -33,7 +33,7 @@ class LedgerServer(BaseHTTPRequestHandler):
             saves = []
             for i in games:
                 
-                svs = [path + '/' + i + '/' + j for j in os.listdir(path + '/' + i)]
+                svs = [path + '/' + i + '/' + j for j in os.listdir(path + '/' + i) if j.endswith(".sav")]
                 
                 saves.extend(svs)
             if (len(saves)):
