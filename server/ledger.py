@@ -55,6 +55,20 @@ class Country:
         self.score += NUM_COLONIES_MULTIPLIER * self.numcolonies
         self.score += NUM_PLANETS_MULTIPLIER * self.numplanets
 
+    def _getResearchPenalty(self):
+        return  0.1 * max(0, self.numcolonies -1) + 0.01 * max(0, self.population-10)
+
+    def getPhysicsResearchWithPenalty(self):
+        return self.physicsResearch / (1 + self._getResearchPenalty())
+
+
+    def getSocietyResearchWithPenalty(self):
+        return self.societyResearch / (1 + self._getResearchPenalty())
+
+    def getEngineeringResearchWithPenalty(self):
+        return self.engineeringResearch / (1 + self._getResearchPenalty())
+
+
 
 def getMatchedScope(text, scopeName):
     countries = text[text.find(scopeName+'={'):]
@@ -283,6 +297,9 @@ def makeLedgerForSave(path, basePath):
             ret2 += '<td>{:10.0f}</td>'.format(country.currentinfluence) + netincome
 
 
+            ret2 += '<td>%.1f</td>' % country.getPhysicsResearchWithPenalty()
+            ret2 += '<td>%.1f</td>' % country.getSocietyResearchWithPenalty()
+            ret2 += '<td>%.1f</td>' % country.getEngineeringResearchWithPenalty()
             ret2 += '<td>%d</td>' % country.population
             ret2 += '</tr>'
             retlist.append((country.id, ret2))
