@@ -27,6 +27,11 @@ class Country:
         self.energyproduction = 0
         self.mineralproduction = 0
         self.influenceproduction = 0
+
+        self.physicsResearch = 0
+        self.societyResearch = 0
+        self.engineeringResearch = 0
+
         self.numsubjects = 0
         self.militarypower = 0
         self.numcolonies = 0
@@ -208,6 +213,27 @@ def makeLedgerForSave(path, basePath):
                                 country.influenceproduction = float(influence)
                             else:
                                 country.influenceproduction = float(influence[0])
+
+                        physicsResearch=paradoxparser.paradox_dict_get_child_by_name(lastmonthmodule, 'physics_research')
+                        if(physicsResearch is not None):
+                            if (type(physicsResearch) == str):
+                                country.physicsResearch = float(physicsResearch)
+                            else:
+                                country.physicsResearch = float(physicsResearch[0])
+
+                        societyResearch=paradoxparser.paradox_dict_get_child_by_name(lastmonthmodule, 'society_research')
+                        if(societyResearch is not None):
+                            if (type(societyResearch) == str):
+                                country.societyResearch = float(societyResearch)
+                            else:
+                                country.societyResearch = float(societyResearch[0])
+
+                        engineeringResearch=paradoxparser.paradox_dict_get_child_by_name(lastmonthmodule, 'engineering_research')
+                        if(engineeringResearch is not None):
+                            if (type(engineeringResearch) == str):
+                                country.engineeringResearch = float(engineeringResearch)
+                            else:
+                                country.engineeringResearch = float(engineeringResearch[0])
 
             country.calcscore()
             ret2 += '<tr>'
