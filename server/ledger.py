@@ -69,28 +69,21 @@ def makeLedgerForSave(path, basePath):
     countries = s[s.find('country={'):]
 
     t = 1
-    cdata = []
-    csdata = ''
     instring = False
     for i in range(len('country={') + 1, len(countries)):
         if countries[i] == '{' and not instring:
             if (t == 1):
-                csdata = ''
                 k = countries[i-1]
                 j = i-1
                 while(k != '\t'):
-                    csdata = k + csdata
                     j -= 1
                     k = countries[j]
             t += 1
         elif countries[i] == '}' and not instring:
             t -= 1
-            if (t == 1):
-                cdata.append(csdata + '}')
         elif countries[i] == '"':
             instring = not instring
 
-        csdata += countries[i]
         if (t == 0):
             countries = countries[:i+1]
             break
