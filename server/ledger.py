@@ -32,6 +32,8 @@ class Country:
         self.societyResearch = 0
         self.engineeringResearch = 0
 
+        self.population = 0
+
         self.numsubjects = 0
         self.militarypower = 0
         self.numcolonies = 0
@@ -97,6 +99,9 @@ def makeLedgerForSave(path, basePath):
 
     country_raw_data = getMatchedScope(s,"country")[0][1]
 
+    planets = getMatchedScope(s,"planet")[0][1]
+
+
     ret = ''
 
     retlist = []
@@ -158,6 +163,15 @@ def makeLedgerForSave(path, basePath):
             controlledplanetsspart = paradoxparser.paradox_dict_get_child_by_name(i[1], 'owned_planets')
             if (controlledplanetsspart is not None):
                 country.numcolonies = len(controlledplanetsspart)
+
+                country.population = 0
+                for planetId in controlledplanetsspart:
+                    planetObject=planets[int(planetId)][1]
+
+                    popObject= next((x[1] for x in planetObject if x[0]=='pop'),None)
+                    # if the planet is under colonization, it doesn't have pop key.
+                    if(popObject is not None):
+                        country.population+=len(popObject)
 
             modulespart = paradoxparser.paradox_dict_get_child_by_name(i[1], 'modules')
             if (modulespart is not None):
@@ -269,6 +283,7 @@ def makeLedgerForSave(path, basePath):
             ret2 += '<td>{:10.0f}</td>'.format(country.currentinfluence) + netincome
 
 
+            ret2 += '<td>%d</td>' % country.population
             ret2 += '</tr>'
             retlist.append((country.id, ret2))
             num += 1
