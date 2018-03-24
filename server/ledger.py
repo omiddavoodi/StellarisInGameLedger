@@ -53,6 +53,35 @@ class Country:
         self.score += NUM_COLONIES_MULTIPLIER * self.numcolonies
         self.score += NUM_PLANETS_MULTIPLIER * self.numplanets
 
+
+def getMatchedScope(text, scopeName):
+    countries = text[text.find(scopeName+'={'):]
+
+    t = 1
+    instring = False
+    for country_key_value_pair in range(len(scopeName+'={') + 1, len(countries)):
+        if countries[country_key_value_pair] == '{' and not instring:
+            if (t == 1):
+                k = countries[country_key_value_pair-1]
+                j = country_key_value_pair-1
+                while(k != '\t'):
+                    j -= 1
+                    k = countries[j]
+            t += 1
+        elif countries[country_key_value_pair] == '}' and not instring:
+            t -= 1
+        elif countries[country_key_value_pair] == '"':
+            instring = not instring
+
+        if (t == 0):
+            countries = countries[:country_key_value_pair+1]
+            break
+
+
+    result = paradoxparser.psr.parse(countries)
+    return result
+
+
 def makeLedgerForSave(path, basePath):
     save = zipfile.ZipFile(path)
     f = save.open('gamestate')
@@ -66,34 +95,7 @@ def makeLedgerForSave(path, basePath):
 
     playercountry = playertag[playertag.find('country=')+len('country='):playertag.find('}')].strip()
 
-    countries = s[s.find('country={'):]
-
-    t = 1
-    instring = False
-    for i in range(len('country={') + 1, len(countries)):
-        if countries[i] == '{' and not instring:
-            if (t == 1):
-                k = countries[i-1]
-                j = i-1
-                while(k != '\t'):
-                    j -= 1
-                    k = countries[j]
-            t += 1
-        elif countries[i] == '}' and not instring:
-            t -= 1
-        elif countries[i] == '"':
-            instring = not instring
-
-        if (t == 0):
-            countries = countries[:i+1]
-            break
-
-
-    result = paradoxparser.psr.parse(countries)
-
-
-    country_raw_data = result[0][1]
-
+    country_raw_data = getMatchedScope(s,"country")[0][1]
 
     ret = ''
 
