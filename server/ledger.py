@@ -27,6 +27,13 @@ class Country:
         self.energyproduction = 0
         self.mineralproduction = 0
         self.influenceproduction = 0
+
+        self.physicsResearch = 0
+        self.societyResearch = 0
+        self.engineeringResearch = 0
+
+        self.population = 0
+
         self.numsubjects = 0
         self.militarypower = 0
         self.numcolonies = 0
@@ -48,6 +55,49 @@ class Country:
         self.score += NUM_COLONIES_MULTIPLIER * self.numcolonies
         self.score += NUM_PLANETS_MULTIPLIER * self.numplanets
 
+    def _getResearchPenalty(self):
+        return  0.1 * max(0, self.numcolonies -1) + 0.01 * max(0, self.population-10)
+
+    def getPhysicsResearchWithPenalty(self):
+        return self.physicsResearch / (1 + self._getResearchPenalty())
+
+
+    def getSocietyResearchWithPenalty(self):
+        return self.societyResearch / (1 + self._getResearchPenalty())
+
+    def getEngineeringResearchWithPenalty(self):
+        return self.engineeringResearch / (1 + self._getResearchPenalty())
+
+
+
+def getMatchedScope(text, scopeName):
+    countries = text[text.find(scopeName+'={'):]
+
+    t = 1
+    instring = False
+    for country_key_value_pair in range(len(scopeName+'={') + 1, len(countries)):
+        if countries[country_key_value_pair] == '{' and not instring:
+            if (t == 1):
+                k = countries[country_key_value_pair-1]
+                j = country_key_value_pair-1
+                while(k != '\t'):
+                    j -= 1
+                    k = countries[j]
+            t += 1
+        elif countries[country_key_value_pair] == '}' and not instring:
+            t -= 1
+        elif countries[country_key_value_pair] == '"':
+            instring = not instring
+
+        if (t == 0):
+            countries = countries[:country_key_value_pair+1]
+            break
+
+
+    result = paradoxparser.psr.parse(countries)
+    return result
+
+
 def makeLedgerForSave(path, basePath):
     save = zipfile.ZipFile(path)
     f = save.open('gamestate')
@@ -61,40 +111,9 @@ def makeLedgerForSave(path, basePath):
 
     playercountry = playertag[playertag.find('country=')+len('country='):playertag.find('}')].strip()
 
-    countries = s[s.find('country={'):]
+    country_raw_data = getMatchedScope(s,"country")[0][1]
 
-    t = 1
-    cdata = []
-    csdata = ''
-    instring = False
-    for i in range(len('country={') + 1, len(countries)):
-        if countries[i] == '{' and not instring:
-            if (t == 1):
-                csdata = ''
-                k = countries[i-1]
-                j = i-1
-                while(k != '\t'):
-                    csdata = k + csdata
-                    j -= 1
-                    k = countries[j]
-            t += 1
-        elif countries[i] == '}' and not instring:
-            t -= 1
-            if (t == 1):
-                cdata.append(csdata + '}')
-        elif countries[i] == '"':
-            instring = not instring
-
-        csdata += countries[i]
-        if (t == 0):
-            countries = countries[:i+1]
-            break
-
-
-    result = paradoxparser.psr.parse(countries)
-
-
-    country_raw_data = result[0][1]
+    planets = getMatchedScope(s,"planet")[0][1]
 
 
     ret = ''
@@ -159,6 +178,15 @@ def makeLedgerForSave(path, basePath):
             if (controlledplanetsspart is not None):
                 country.numcolonies = len(controlledplanetsspart)
 
+                country.population = 0
+                for planetId in controlledplanetsspart:
+                    planetObject=planets[int(planetId)][1]
+
+                    popObject= next((x[1] for x in planetObject if x[0]=='pop'),None)
+                    # if the planet is under colonization, it doesn't have pop key.
+                    if(popObject is not None):
+                        country.population+=len(popObject)
+
             modulespart = paradoxparser.paradox_dict_get_child_by_name(i[1], 'modules')
             if (modulespart is not None):
                 economymodule = paradoxparser.paradox_dict_get_child_by_name(modulespart, 'standard_economy_module')
@@ -209,6 +237,27 @@ def makeLedgerForSave(path, basePath):
                             else:
                                 country.influenceproduction = float(influence[0])
 
+                        physicsResearch=paradoxparser.paradox_dict_get_child_by_name(lastmonthmodule, 'physics_research')
+                        if(physicsResearch is not None):
+                            if (type(physicsResearch) == str):
+                                country.physicsResearch = float(physicsResearch)
+                            else:
+                                country.physicsResearch = float(physicsResearch[0])
+
+                        societyResearch=paradoxparser.paradox_dict_get_child_by_name(lastmonthmodule, 'society_research')
+                        if(societyResearch is not None):
+                            if (type(societyResearch) == str):
+                                country.societyResearch = float(societyResearch)
+                            else:
+                                country.societyResearch = float(societyResearch[0])
+
+                        engineeringResearch=paradoxparser.paradox_dict_get_child_by_name(lastmonthmodule, 'engineering_research')
+                        if(engineeringResearch is not None):
+                            if (type(engineeringResearch) == str):
+                                country.engineeringResearch = float(engineeringResearch)
+                            else:
+                                country.engineeringResearch = float(engineeringResearch[0])
+
             country.calcscore()
             ret2 += '<tr>'
 
@@ -248,6 +297,10 @@ def makeLedgerForSave(path, basePath):
             ret2 += '<td>{:10.0f}</td>'.format(country.currentinfluence) + netincome
 
 
+            ret2 += '<td>%.1f</td>' % country.getPhysicsResearchWithPenalty()
+            ret2 += '<td>%.1f</td>' % country.getSocietyResearchWithPenalty()
+            ret2 += '<td>%.1f</td>' % country.getEngineeringResearchWithPenalty()
+            ret2 += '<td>%d</td>' % country.population
             ret2 += '</tr>'
             retlist.append((country.id, ret2))
             num += 1
